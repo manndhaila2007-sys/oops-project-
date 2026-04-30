@@ -24,10 +24,10 @@ if %errorlevel% neq 0 (
     exit /b %errorlevel%
 )
 
-echo [3/3] Compiling Server...
-javac -cp bin -d bin src/FoodOrderingServer.java
+echo [3/3] Compiling GUI and Server...
+javac -cp bin -d bin src/FoodOrderingServer.java src/ui/FoodOrderingGUI.java
 if %errorlevel% neq 0 (
-    echo ERROR: Server compilation failed!
+    echo ERROR: Server/GUI compilation failed!
     pause
     exit /b %errorlevel%
 )
@@ -37,27 +37,17 @@ echo ============================================
 echo   COMPILATION SUCCESSFUL!
 echo ============================================
 echo.
-echo Starting OFO Server...
+echo Starting OFO Desktop App...
 echo.
-echo Access the website at: http://localhost:8080
-echo Port: 8080
-echo.
-echo Features:
-echo - Browse Restaurants
-echo - Place Orders
-echo - Track Orders
-echo - Leave Reviews
-echo - Multiple Payment Options
-echo.
-echo (Keep this window open while using the website)
+echo The Java Swing GUI will now open.
 echo.
 
 cd bin
-java -cp . FoodOrderingServer
+java -cp . ui.FoodOrderingGUI
 
 if %errorlevel% neq 0 (
     echo.
-    echo ERROR: Server failed to start!
+    echo ERROR: App failed to start!
     echo.
 )
 

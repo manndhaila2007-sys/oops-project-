@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OFO Project Diagrams</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; text-align: center; background: #f4f4f9; }
+        .diagram-container { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 40px; display: inline-block; }
+        h1 { color: #333; }
+        h2 { color: #667eea; }
+    </style>
+    <!-- Include Mermaid.js -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</head>
+<body>
+
+    <h1>Online Food Ordering (OFO) - Architecture Diagrams</h1>
+    <p><i>Double-click this file anytime to view your capstone diagrams!</i></p>
+
+    <div class="diagram-container">
+        <h2>1. Class Diagram (User -> Customer, PaymentMethod -> CardPayment)</h2>
+        <pre class="mermaid">
+classDiagram
+    class User {
+        &lt;&lt;abstract&gt;&gt;
+        -int id
+        -String username
+        -String email
+    }
+
+    class Customer {
+        -String address
+        -String phone
+    }
+
+    class PaymentMethod {
+        &lt;&lt;interface&gt;&gt;
+        +processPayment(double amount) boolean
+        +refundPayment(double amount) void
+    }
+
+    class CardPayment {
+        -String cardNumber
+        -String cardholderName
+        -double balance
+    }
+
+    class CODPayment {
+        -double cashHanded
+    }
+
+    User &lt;|-- Customer
+    User &lt;|-- RestaurantOwner
+    PaymentMethod &lt;|.. CardPayment
+    PaymentMethod &lt;|.. CODPayment
+
+    MainServer --&gt; SystemFacade
+    SystemFacade --&gt; Store
+    Store "1" *-- "*" Item : contains
+    Store "1" *-- "*" OrderCart : manages
+    Item &lt;|-- Meal
+    Item &lt;|-- BeverageItem
+    OrderCart "1" *-- "1" Customer : belongs to
+    OrderCart "1" o-- "*" Item : includes
+    OrderCart --&gt; PaymentMethod : uses
+        </pre>
+    </div>
+
+    <br>
+
+    <div class="diagram-container">
+        <h2>2. Database Entity-Relationship (ER) Diagram</h2>
+        <pre class="mermaid">
+erDiagram
+    USERS ||--o{ ORDERS : places
+    ORDERS ||--|{ ORDER_ITEMS : contains
+    MENU_ITEMS ||--o{ ORDER_ITEMS : "included in"
+
+    USERS {
+        int id PK
+        string username
+        string password
+        string email
+        string role
+    }
+
+    MENU_ITEMS {
+        int id PK
+        string name
+        string description
+        decimal price
+        string category
+    }
+
+    ORDERS {
+        string order_id PK
+        int user_id FK
+        decimal total_amount
+        datetime created_at
+        string status
+    }
+
+    ORDER_ITEMS {
+        int id PK
+        string order_id FK
+        int menu_item_id FK
+        int quantity
+        decimal unit_price
+    }
+        </pre>
+    </div>
+
+</body>
+</html>

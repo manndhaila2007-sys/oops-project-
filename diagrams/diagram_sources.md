@@ -43,21 +43,38 @@ classDiagram
         +calculateFinalPrice() double
     }
 
-    class Person {
-        -String name
+    class User {
+        <<abstract>>
+        -int id
+        -String username
         -String email
     }
 
-    class Shopper {
+    class Customer {
         -String address
+        -String phone
     }
 
-    class OrderCart {
-        -String orderId
-        -Shopper shopper
-        -List~Item~ cartItems
-        +getTotalAmount() double
+    class PaymentMethod {
+        <<interface>>
+        +processPayment(double amount) boolean
+        +refundPayment(double amount) void
     }
+
+    class CardPayment {
+        -String cardNumber
+        -String cardholderName
+        -double balance
+    }
+
+    class CODPayment {
+        -double cashHanded
+    }
+
+    User <|-- Customer
+    User <|-- RestaurantOwner
+    PaymentMethod <|.. CardPayment
+    PaymentMethod <|.. CODPayment
 
     MainServer --> SystemFacade
     SystemFacade --> Store
@@ -65,9 +82,9 @@ classDiagram
     Store "1" *-- "*" OrderCart : manages
     Item <|-- Meal
     Item <|-- BeverageItem
-    Person <|-- Shopper
-    OrderCart "1" *-- "1" Shopper : belongs to
+    OrderCart "1" *-- "1" Customer : belongs to
     OrderCart "1" o-- "*" Item : includes
+    OrderCart --> PaymentMethod : uses
 ```
 
 ## 2. Database ER Diagram (`database-diagram.png` equivalent)

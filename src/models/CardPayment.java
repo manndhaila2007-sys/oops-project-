@@ -15,13 +15,29 @@ public class CardPayment implements PaymentMethod {
 
     @Override
     public boolean processPayment(double amount) {
-        if (balance >= amount && isValidCard()) {
+        try {
+            if (amount <= 0) {
+                throw new IllegalArgumentException("Payment amount must be greater than zero.");
+            }
+            if (!isValidCard()) {
+                throw new SecurityException("Invalid card details provided.");
+            }
+            if (balance < amount) {
+                throw new IllegalStateException("Insufficient funds on card.");
+            }
+            
             balance -= amount;
             System.out.println("Payment of Rs. " + amount + " processed via Card ending in " + 
                              cardNumber.substring(cardNumber.length() - 4));
             return true;
+            
+        } catch (IllegalArgumentException | SecurityException | IllegalStateException e) {
+            System.err.println("Payment Processing Error: " + e.getMessage());
+            return false;
+        } catch (Exception e) {
+            System.err.println("An unexpected error occurred during payment: " + e.getMessage());
+            return false;
         }
-        return false;
     }
 
     @Override

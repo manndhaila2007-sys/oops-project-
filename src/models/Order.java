@@ -28,8 +28,18 @@ public class Order {
     }
 
     public void addItem(OrderItem item) {
-        items.add(item);
-        calculateTotal();
+        try {
+            if (item == null) {
+                throw new IllegalArgumentException("Cannot add a null item to the order.");
+            }
+            if (status != OrderStatus.PENDING) {
+                throw new IllegalStateException("Cannot add items. Order is already " + status);
+            }
+            items.add(item);
+            calculateTotal();
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            System.err.println("Order Error: " + e.getMessage());
+        }
     }
 
     public void removeItem(int index) {
@@ -47,9 +57,19 @@ public class Order {
     }
 
     public void updateStatus(OrderStatus newStatus) {
-        this.status = newStatus;
-        if (newStatus == OrderStatus.DELIVERED) {
-            this.deliveryTime = LocalDateTime.now();
+        try {
+            if (newStatus == null) {
+                throw new IllegalArgumentException("Order status cannot be null.");
+            }
+            if (this.status == OrderStatus.CANCELLED) {
+                throw new IllegalStateException("Cannot update status of a cancelled order.");
+            }
+            this.status = newStatus;
+            if (newStatus == OrderStatus.DELIVERED) {
+                this.deliveryTime = LocalDateTime.now();
+            }
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            System.err.println("Status Update Error: " + e.getMessage());
         }
     }
 
